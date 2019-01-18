@@ -8,8 +8,6 @@ git clone https://github.com/Czechball/SimpleUserCreate.git
 
 cd SimpleUserCreate
 
-chmod +x SimpleUserCreate.sh
-
 ./SimpleUserCreate.sh
 ```
 
