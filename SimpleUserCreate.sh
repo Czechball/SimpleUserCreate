@@ -6,20 +6,12 @@ ERRORFORMAT="[\e[38;5;196mERROR\e[0m]     "
 INFOFORMAT="[\e[38;5;44mINFO\e[0m ]     "
 QUESTIONFORMAT="[?    ]     "
 
-#Funkce:
-#error - spustí znova zadání údajů (funkce userCreate)
-#userCreate - základ, spouští zadání údajů
-#userCheck - kontroluje, jestli existuje účet
-#userPrompt - potvrzuje správnost údajů (po kontrole existujícího uživatele)
-
-#znovu soustí vytvoření uživatele
 error () {
 printf "\n$INFOFORMAT Zadejte prosím znovu své údaje\n--------------\n\n"
 readPrimaryName	
 }
 
 readPrimaryName () {
-#čtení jména
 printf "$INFOFORMAT Zadejte prosím své jméno:"
 read primaryName
 if [[ $primaryName = "" ]];
@@ -32,7 +24,6 @@ fi
 }
 
 readSecondaryName () {
-#čtení příjmení
 printf "$INFOFORMAT Zadejte prosím vaše příjmení:"
 read secondaryName
 if [[ $secondaryName = "" ]];
@@ -45,7 +36,6 @@ fi
 }
 
 readNickname () {
-#čtení přezdívky
 printf "$INFOFORMAT Zadejte prosím váš nickname (přihlašovací jméno):"
 read nickname
 if [[ $nickname = "" ]];
@@ -70,7 +60,6 @@ userCheck () {
 
 userPrompt () {
 printf "$INFOFORMAT Vaše jméno: $primaryName $secondaryName\n$INFOFORMAT Název vašeho účtu: $nickname\n"
-#Prompt registrace
 read -p "$QUESTIONFORMAT Chcete vytvořit uživatelský účet s těmito údaji? Y/n " -n 1 -r
 echo
 	if [[ $REPLY =~ ^[Yy]$ ]];
@@ -208,22 +197,12 @@ echo
 
 splash () {
 	printf "Simple User Create Script\n"
-	#printf " --- Simple ---------------\n"
-	#printf " ------- User -------------\n"
-	#printf " ----------- Create -------\n"
-	#printf " --------------- Script ---\n"
 	printf " ******* Verze 1.4  *******\n"
 	printf " ----Vytvořil Czechball----\n"
 	printf " https://github.com/Czechball\n"
 	printf " \n"
 }
 
-#spuštění té parády
 splash
-#printf "Debug:\n"
-#printf "$OKFORMAT toto je test\n"
-#printf "$INFOFORMAT další test\n"
-#printf "$ERRORFORMAT ještě test\n"
-#printf "$QUESTIONFORMAT haha toto je krásné\n"
 printf "$INFOFORMAT Dobrý Den. Vítejte v SimpleUserCreate skriptu.\n"
 readPrimaryName
