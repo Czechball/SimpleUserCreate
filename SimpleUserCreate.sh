@@ -60,9 +60,9 @@ userCheck () {
 
 userPrompt () {
 printf "$INFOFORMAT Vaše jméno: $primaryName $secondaryName\n$INFOFORMAT Název vašeho účtu: $nickname\n"
-read -p "$QUESTIONFORMAT Chcete vytvořit uživatelský účet s těmito údaji? Y/n " -n 1 -r
+read -p "$QUESTIONFORMAT Chcete vytvořit uživatelský účet s těmito údaji? A/n " -n 1 -r
 echo
-	if [[ $REPLY =~ ^[Yy]$ ]];
+	if [[ $REPLY =~ ^[AaYy]$ ]];
 	then
 		sudo useradd $nickname -c "$primaryName $secondaryName"
 		printf "$INFOFORMAT Vytváření uživatele $nickname s komentářem '$primaryName $secondaryName' ...\n"
