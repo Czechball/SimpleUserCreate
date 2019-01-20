@@ -72,7 +72,6 @@ printf "$INFOFORMAT Kontrola ID...\n"
 	if id "$nickname" >/dev/null 2>&1;
 	then
     	printf "$OKFORMAT Účet '$nickname' existuje v id.\n$OKFORMAT Účet byl úspěšně vytvořen.\n"
-    	groupPrompt
 	else
 		printf "\e[38;5;196mCHYBA: Účet se nepodařilo zkontrolovat. Máte oprávnění root?\nSkript nespouštějte jako sudo, ale zadejte root heslo až k tomu budete vyzváni.\e[0m\n"
 		exit
@@ -80,11 +79,11 @@ printf "$INFOFORMAT Kontrola ID...\n"
 }
 
 groupPrompt () {
-	read -p "$QUESTIONFORMAT Nyní bude přidána skupina 'sales' a do ní přiřazen uživatel $nickname. Chcete pokračovat? Y/n " -n 1 -r
+	read -p "$QUESTIONFORMAT Nyní bude přidána skupina 'sales' a do ní přiřazen uživatel $nickname. Chcete pokračovat? A/n " -n 1 -r
 	echo
-		if [[ $REPLY =~ ^[Yy]$ ]];
+		if [[ $REPLY =~ ^[AaYy]$ ]];
 		then
-			groupCheck
+			:
 		else
 			repeatPrompt
 		fi
@@ -94,19 +93,19 @@ groupCheck () {
 	printf "$INFOFORMAT Kontrola existence skupiny 'sales'...\n"
 if grep -q sales /etc/group
 	then
-		read -p "$QUESTIONFORMAT Skupina 'sales' již existuje. Chcete přiřadit uživatele '$nickname' do skupiny 'sales'? Y/n " -n 1 -r
+		read -p "$QUESTIONFORMAT Skupina 'sales' již existuje. Chcete přiřadit uživatele '$nickname' do skupiny 'sales'? A/n " -n 1 -r
 		echo
-	if [[ $REPLY =~ ^[Yy]$ ]];
+	if [[ $REPLY =~ ^[AaYy]$ ]];
 		then
 			userModAddGroup
 		else
 			repeatPrompt
 	fi
 	else
-			read -p "$QUESTIONFORMAT Skupina 'sales' nebyla v /etc/group nalezena. Chcete vytvořit skupinu 'sales'? Y/n " -n 1 -r
-		if [[ $REPLY =~ ^[Yy]$ ]];
+			read -p "$QUESTIONFORMAT Skupina 'sales' nebyla v /etc/group nalezena. Chcete vytvořit skupinu 'sales'? A/n " -n 1 -r
+		if [[ $REPLY =~ ^[AaYy]$ ]];
 			then
-				groupCreate
+				:
 			else
 				groupDeletePrompt
 		fi
@@ -120,11 +119,11 @@ groupCreate () {
 	if grep -q sales /etc/group
 	then
 		printf "$OKFORMAT Skupina 'sales' byla úspěšně vytvořena.\n"
-		read -p "$QUESTIONFORMAT Chcete přiřadit uživatele '$nickname' do skupiny 'sales'? Y/n " -n 1 -r
+		read -p "$QUESTIONFORMAT Chcete přiřadit uživatele '$nickname' do skupiny 'sales'? A/n " -n 1 -r
 		echo
-		if [[ $REPLY =~ ^[Yy]$ ]];
+		if [[ $REPLY =~ ^[AaYy]$ ]];
 		then
-			userModAddGroup
+			:
 		else
 			printf "\e[38;5;196mCHYBA: Skupina nebyla vytvořena.\nMáte oprávnění root?\nSkript nespouštějte jako sudo, ale zadejte root heslo až k tomu budete vyzváni.\e[0m\n"
 			exit
@@ -139,16 +138,15 @@ printf "$INFOFORMAT Kontrola skupin uživatele $nickname...\n"
 if getent group sales | grep&>/dev/null "\b$nickname\b";
 then
 	printf "$OKFORMAT Uživatel $nickname je ve skupině 'sales'.\n"
-	userDeletePrompt
 else
 	printf "\e[38;5;196mCHYBA: Uživatel $nickname není ve skupině 'sales'.\nMáte oprávnění root?\nSkript nespouštějte jako sudo, ale zadejte root heslo až k tomu budete vyzváni.\e[0m\n"
 fi
 }
 
 userDeletePrompt () {
-	read -p "$QUESTIONFORMAT Chcete vymazat vytvořeného uživatele? y/N " -n 1 -r
+	read -p "$QUESTIONFORMAT Chcete vymazat vytvořeného uživatele? a/N " -n 1 -r
 	echo
-		if [[ $REPLY =~ ^[Yy]$ ]];
+		if [[ $REPLY =~ ^[AaYy]$ ]];
 		then
 			sudo userdel -f $nickname
 			printf "$INFOFORMAT Mazání uživatele '$nickname' ...\n"
@@ -159,29 +157,27 @@ userDeletePrompt () {
 				exit
 			else
 				printf "$OKFORMAT Účet $nickname již neexistuje v id.\n$OKFORMAT Účet byl úspěšně vymazán.\n"
-				groupDeletePrompt
 			fi
 		else
-			groupDeletePrompt
+			:
 		fi
 }
 
 groupDeletePrompt () {
-	read -p "$QUESTIONFORMAT Chcete vymazat skupinu 'sales'? y/N " -n 1 -r
+	read -p "$QUESTIONFORMAT Chcete vymazat skupinu 'sales'? a/N " -n 1 -r
 	echo
-		if [[ $REPLY =~ ^[Yy]$ ]];
+		if [[ $REPLY =~ ^[AaYy]$ ]];
 		then
 			sudo delgroup sales
-			repeatPrompt
 		else
-			repeatPrompt
+			:
 		fi
 }
 
 repeatPrompt () {
-read -p "$QUESTIONFORMAT Chcete vytvořit další účet? y/N " -n 1 -r
+read -p "$QUESTIONFORMAT Chcete vytvořit další účet? a/N " -n 1 -r
 echo
-	if [[ $REPLY =~ ^[Yy]$ ]];
+	if [[ $REPLY =~ ^[AaYy]$ ]];
 	then
 		readPrimaryName
 	else
@@ -206,3 +202,10 @@ readNickname
 userCheck
 userPrompt
 userAfterCheck
+groupPrompt
+groupCheck
+groupCreate
+userModAddGroup
+userDeletePrompt
+groupDeletePrompt
+repeatPrompt
