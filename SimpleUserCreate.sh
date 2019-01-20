@@ -6,8 +6,8 @@ ERRORFORMAT="[\e[38;5;196mERROR\e[0m]     "
 INFOFORMAT="[\e[38;5;44mINFO\e[0m ]     "
 QUESTIONFORMAT="[?    ]     "
 
-error () {
-printf "\n$INFOFORMAT Zadejte prosím znovu své údaje\n--------------\n\n"
+userCreateError () {
+printf "\n$ERRORFORMAT Vytvoření uživatele bylo přerušeno.\n$INFOFORMAT Zadejte prosím znovu své údaje\n--------------\n\n"
 readPrimaryName	
 }
 
@@ -16,6 +16,7 @@ printf "$INFOFORMAT Zadejte prosím své jméno:"
 read primaryName
 if [[ $primaryName = "" ]];
 	then
+		printf "$ERRORFORMAT Vaše jméno nesmí být prázdné.\n"
 		readPrimaryName
 fi
 
@@ -26,6 +27,7 @@ printf "$INFOFORMAT Zadejte prosím vaše příjmení:"
 read secondaryName
 if [[ $secondaryName = "" ]];
 	then
+		printf "$ERRORFORMAT Vaše příjmení nesmí být prázdné.\n"
 		readSecondaryName
 fi
 
@@ -36,7 +38,10 @@ printf "$INFOFORMAT Zadejte prosím váš nickname (přihlašovací jméno):"
 read nickname
 if [[ $nickname = "" ]];
 	then
+		printf "$ERRORFORMAT Uživatelské jméno nesmí být prázdné.\n"
 		readNickname
+	else
+		userCheck
 fi
 
 }
@@ -44,9 +49,8 @@ fi
 userCheck () {
 	if id "$nickname" >/dev/null 2>&1;
 	then
-        printf "$ERRORFORMAT Uživatel jménem $nickname již existuje. Prosím vyberte si jiný nickname:"
-        read nickname
-        userCheck
+        printf "$ERRORFORMAT Uživatel jménem $nickname již existuje. Prosím vyberte si jiný nickname.\n"
+        readNickname
 	fi
 }
 
@@ -58,9 +62,8 @@ echo
 	then
 		sudo useradd $nickname -c "$primaryName $secondaryName"
 		printf "$INFOFORMAT Vytváření uživatele $nickname s komentářem '$primaryName $secondaryName' ...\n"
-		userAfterCheck
 	else
-		error
+		userCreateError
 	fi
 }
 
@@ -202,3 +205,4 @@ readSecondaryName
 readNickname
 userCheck
 userPrompt
+userAfterCheck
