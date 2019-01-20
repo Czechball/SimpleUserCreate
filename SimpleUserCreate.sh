@@ -17,8 +17,6 @@ read primaryName
 if [[ $primaryName = "" ]];
 	then
 		readPrimaryName
-	else
-		readSecondaryName
 fi
 
 }
@@ -29,8 +27,6 @@ read secondaryName
 if [[ $secondaryName = "" ]];
 	then
 		readSecondaryName
-	else
-		readNickname
 fi
 
 }
@@ -41,8 +37,6 @@ read nickname
 if [[ $nickname = "" ]];
 	then
 		readNickname
-	else
-		userCheck
 fi
 
 }
@@ -53,8 +47,6 @@ userCheck () {
         printf "$ERRORFORMAT Uživatel jménem $nickname již existuje. Prosím vyberte si jiný nickname:"
         read nickname
         userCheck
-	else
-        userPrompt
 	fi
 }
 
@@ -206,3 +198,7 @@ splash () {
 splash
 printf "$INFOFORMAT Dobrý Den. Vítejte v SimpleUserCreate skriptu.\n"
 readPrimaryName
+readSecondaryName
+readNickname
+userCheck
+userPrompt
