@@ -1,11 +1,15 @@
 #!/bin/bash
 #SimpleUserCreate.sh
 
+#>>> text formatting variables
 OKFORMAT="[\e[32mOK\e[0m   ]"
 ERRORFORMAT="[\e[38;5;196mERROR\e[0m]"
 INFOFORMAT="[\e[38;5;44mINFO\e[0m ]"
 QUESTIONFORMAT="[?    ]"
 
+#>>> core functions
+
+#>> splash screen
 splash () {
 	printf "Simple User Create Script\n"
 	printf " ******* Verze 1.4  *******\n"
@@ -14,6 +18,7 @@ splash () {
 	printf " \n"
 }
 
+#>> main function (loop)
 mainLoop () {
 readPrimaryName
 readSecondaryName
@@ -31,6 +36,7 @@ repeatPrompt
 mainLoop
 }
 
+#>> reading user's primary name
 readPrimaryName () {
 printf "$INFOFORMAT Zadejte prosím své jméno:"
 read primaryName
@@ -42,6 +48,7 @@ fi
 
 }
 
+#>> reading user's secondary name
 readSecondaryName () {
 printf "$INFOFORMAT Zadejte prosím vaše příjmení:"
 read secondaryName
@@ -53,6 +60,7 @@ fi
 
 }
 
+#>> reading users desired username
 readNickname () {
 printf "$INFOFORMAT Zadejte prosím váš nickname (přihlašovací jméno):"
 read nickname
@@ -66,6 +74,7 @@ fi
 
 }
 
+#>> checking if entered username already exists in system
 userCheck () {
 	if id "$nickname" >/dev/null 2>&1;
 	then
@@ -74,6 +83,8 @@ userCheck () {
 	fi
 }
 
+
+#>> prompting user to confirm entered info and account creation
 userPrompt () {
 printf "$INFOFORMAT Vaše jméno: $primaryName $secondaryName\n$INFOFORMAT Název vašeho účtu: $nickname\n"
 read -p "$QUESTIONFORMAT Chcete vytvořit uživatelský účet s těmito údaji? A/n " -n 1 -r
@@ -87,6 +98,8 @@ echo
 	fi
 }
 
+
+#>> checking if the account was created succesfully (probably not necessary but whatever)
 userAfterCheck () {
 printf "$INFOFORMAT Kontrola ID...\n"
 	if id "$nickname" >/dev/null 2>&1;
@@ -98,6 +111,8 @@ printf "$INFOFORMAT Kontrola ID...\n"
 	fi
 }
 
+
+#>> prompting user to begin the group creation process
 groupPrompt () {
 	read -p "$QUESTIONFORMAT Nyní bude přidána skupina 'sales' a do ní přiřazen uživatel $nickname. Chcete pokračovat? A/n " -n 1 -r
 	echo
@@ -109,6 +124,7 @@ groupPrompt () {
 		fi
 }
 
+#>> checking if group named 'sales' exists in system, then prompt its creation
 groupCheck () {
 	printf "$INFOFORMAT Kontrola existence skupiny 'sales'...\n"
 if grep -q sales /etc/group
@@ -132,6 +148,7 @@ if grep -q sales /etc/group
 fi
 }
 
+#>> creating a group calles 'sales'
 groupCreate () {
 	printf "\n$INFOFORMAT Vytváření skupiny 'sales'...\n"
 	sudo groupadd sales
@@ -151,6 +168,7 @@ groupCreate () {
 	fi
 }
 
+#>> adding the created user to the group 'sales'
 userModAddGroup () {
 printf "$INFOFORMAT Přidávání uživatele $nickname do skupiny 'sales'...\n"
 sudo usermod -a -G sales $nickname
@@ -163,6 +181,7 @@ else
 fi
 }
 
+#>> cleanup prompt, deleting user
 userDeletePrompt () {
 	read -p "$QUESTIONFORMAT Chcete vymazat vytvořeného uživatele? a/N " -n 1 -r
 	echo
@@ -183,6 +202,7 @@ userDeletePrompt () {
 		fi
 }
 
+#>> cleanup prompt, deleting group
 groupDeletePrompt () {
 	read -p "$QUESTIONFORMAT Chcete vymazat skupinu 'sales'? a/N " -n 1 -r
 	echo
@@ -194,6 +214,7 @@ groupDeletePrompt () {
 		fi
 }
 
+#>> asking the user if another account should be created
 repeatPrompt () {
 read -p "$QUESTIONFORMAT Chcete vytvořit další účet? a/N " -n 1 -r
 echo
@@ -206,11 +227,15 @@ echo
 	fi
 }
 
+#>>> misc functions
+
+#>> if there is a user induced error in the account creation process, this function is called
 userCreateError () {
 printf "\n$ERRORFORMAT Vytvoření uživatele bylo přerušeno.\n$INFOFORMAT Zadejte prosím znovu své údaje\n--------------\n\n"
 readPrimaryName	
 }
 
+#>>> the main code
 splash
 printf "$INFOFORMAT Dobrý Den. Vítejte v SimpleUserCreate skriptu.\n"
 mainLoop
