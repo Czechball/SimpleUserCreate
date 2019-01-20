@@ -6,9 +6,29 @@ ERRORFORMAT="[\e[38;5;196mERROR\e[0m]"
 INFOFORMAT="[\e[38;5;44mINFO\e[0m ]"
 QUESTIONFORMAT="[?    ]"
 
-userCreateError () {
-printf "\n$ERRORFORMAT Vytvoření uživatele bylo přerušeno.\n$INFOFORMAT Zadejte prosím znovu své údaje\n--------------\n\n"
-readPrimaryName	
+splash () {
+	printf "Simple User Create Script\n"
+	printf " ******* Verze 1.4  *******\n"
+	printf " ----Vytvořil Czechball----\n"
+	printf " https://github.com/Czechball\n"
+	printf " \n"
+}
+
+mainLoop () {
+readPrimaryName
+readSecondaryName
+readNickname
+userCheck
+userPrompt
+userAfterCheck
+groupPrompt
+groupCheck
+groupCreate
+userModAddGroup
+userDeletePrompt
+groupDeletePrompt
+repeatPrompt
+mainLoop
 }
 
 readPrimaryName () {
@@ -186,29 +206,9 @@ echo
 	fi
 }
 
-splash () {
-	printf "Simple User Create Script\n"
-	printf " ******* Verze 1.4  *******\n"
-	printf " ----Vytvořil Czechball----\n"
-	printf " https://github.com/Czechball\n"
-	printf " \n"
-}
-
-mainLoop () {
-readPrimaryName
-readSecondaryName
-readNickname
-userCheck
-userPrompt
-userAfterCheck
-groupPrompt
-groupCheck
-groupCreate
-userModAddGroup
-userDeletePrompt
-groupDeletePrompt
-repeatPrompt
-mainLoop
+userCreateError () {
+printf "\n$ERRORFORMAT Vytvoření uživatele bylo přerušeno.\n$INFOFORMAT Zadejte prosím znovu své údaje\n--------------\n\n"
+readPrimaryName	
 }
 
 splash
