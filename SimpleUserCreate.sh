@@ -179,7 +179,7 @@ read -p "$QUESTIONFORMAT Chcete vytvořit další účet? a/N " -n 1 -r
 echo
 	if [[ $REPLY =~ ^[AaYy]$ ]];
 	then
-		readPrimaryName
+		:
 	else
 		printf "$OKFORMAT Skript dokončen.\n"
 		exit
@@ -208,6 +208,7 @@ userModAddGroup
 userDeletePrompt
 groupDeletePrompt
 repeatPrompt
+mainLoop
 }
 
 splash
