@@ -194,8 +194,7 @@ splash () {
 	printf " \n"
 }
 
-splash
-printf "$INFOFORMAT Dobrý Den. Vítejte v SimpleUserCreate skriptu.\n"
+mainLoop () {
 readPrimaryName
 readSecondaryName
 readNickname
@@ -209,3 +208,9 @@ userModAddGroup
 userDeletePrompt
 groupDeletePrompt
 repeatPrompt
+mainLoop
+}
+
+splash
+printf "$INFOFORMAT Dobrý Den. Vítejte v SimpleUserCreate skriptu.\n"
+mainLoop
