@@ -1,10 +1,10 @@
 #!/bin/bash
 #SimpleUserCreate.sh
 
-OKFORMAT="[\e[32mOK\e[0m   ]     "
-ERRORFORMAT="[\e[38;5;196mERROR\e[0m]     "
-INFOFORMAT="[\e[38;5;44mINFO\e[0m ]     "
-QUESTIONFORMAT="[?    ]     "
+OKFORMAT="[\e[32mOK\e[0m   ]"
+ERRORFORMAT="[\e[38;5;196mERROR\e[0m]"
+INFOFORMAT="[\e[38;5;44mINFO\e[0m ]"
+QUESTIONFORMAT="[?    ]"
 
 userCreateError () {
 printf "\n$ERRORFORMAT Vytvoření uživatele bylo přerušeno.\n$INFOFORMAT Zadejte prosím znovu své údaje\n--------------\n\n"
