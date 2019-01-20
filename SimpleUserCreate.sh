@@ -208,7 +208,6 @@ userModAddGroup
 userDeletePrompt
 groupDeletePrompt
 repeatPrompt
-mainLoop
 }
 
 splash
