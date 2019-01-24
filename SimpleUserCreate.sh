@@ -30,10 +30,20 @@ groupPrompt
 groupCheck
 groupCreate
 userModAddGroup
+accountsFileCheck
 userDeletePrompt
 groupDeletePrompt
+fileDeletePrompt
 repeatPrompt
 mainLoop
+}
+
+sudoCheck () {
+if [ "$EUID" -ne 0 ]
+then printf "$ERRORFORMAT Prosím spusťte tento skript jako root.\n"
+exit
+else :
+fi
 }
 
 #>> reading user's primary name
@@ -91,7 +101,7 @@ read -p "$QUESTIONFORMAT Chcete vytvořit uživatelský účet s těmito údaji?
 echo
 	if [[ $REPLY =~ ^[AaYy]$ ]];
 	then
-		sudo useradd $nickname -c "$primaryName $secondaryName"
+		useradd $nickname -c "$primaryName $secondaryName"
 		printf "$INFOFORMAT Vytváření uživatele $nickname s komentářem '$primaryName $secondaryName' ...\n"
 	else
 		userCreateError
@@ -151,7 +161,7 @@ fi
 #>> creating a group calles 'sales'
 groupCreate () {
 	printf "\n$INFOFORMAT Vytváření skupiny 'sales'...\n"
-	sudo groupadd sales
+	groupadd sales
 	printf "$INFOFORMAT Kontrola existence skupiny 'sales'...\n"
 	if grep -q sales /etc/group
 	then
@@ -171,7 +181,7 @@ groupCreate () {
 #>> adding the created user to the group 'sales'
 userModAddGroup () {
 printf "$INFOFORMAT Přidávání uživatele $nickname do skupiny 'sales'...\n"
-sudo usermod -a -G sales $nickname
+usermod -a -G sales $nickname
 printf "$INFOFORMAT Kontrola skupin uživatele $nickname...\n"
 if getent group sales | grep&>/dev/null "\b$nickname\b";
 then
@@ -181,8 +191,60 @@ else
 fi
 }
 
+accountsFileCheck () {
+	printf "$INFOFORMAT Nyní bude vytvořen soubor s informacemi v '/root/accounts'\n"
+	printf "$INFOFORMAT Kontrola existence souboru '/root/accounts'...\n"
+	if [ -f /root/accounts ]; 
+	then
+		printf "$INFOFORMAT /root/accounts již existuje. Budou do něj zapsány informace o vytvořeném uživateli.\n"
+		read -p "$QUESTIONFORMAT Chcete zapsat informace o uživateli? A/n " -n 1 -r
+		echo
+		if [[ $REPLY =~ ^[AaYy]$ ]];
+		then
+			:
+		else
+			repeatPrompt
+		fi
+		accountsFileAppend
+	else
+		echo "$INFOFORMAT /root/accounts neexistuje. Bude vytvořen a budou do něj zapsány informace o vytvořeném uživateli.\n"
+		read -p "$QUESTIONFORMAT Chcete vytvořit soubor /etc/accounts a zapsat do něj informace u uživateli? A/n " -n 1 -r
+		echo
+		if [[ $REPLY =~ ^[AaYy]$ ]];
+		then
+			:
+		else
+			repeatPrompt
+		fi
+		accountsFileCreate
+	fi
+}
+
+accountsFileCreate () {
+	printf "$INFOFORMAT Vytváření souboru '/root/accounts'...\n"
+	echo "$primaryName, $secondaryName, $nickname" > /root/accounts
+	printf "$INFOFORMAT Kontrola souboru '/root/accounts'..."
+	if [ -f /root/accounts ];
+	then
+		printf "$OKFORMAT Soubor byl úspěšně vytvořen a uživatel zapsán.\n"
+		printf "$INFOFORMAT Obsah souboru /root/accounts :"
+		cat /root/accounts
+	else
+		printf "$ERRORFORMAT \e[38;5;196mCHYBA: Soubor '/root/accounts' nebyl nalezen. Máte oprávnění root?\e[0m\n"
+	fi
+}
+
+accountsFileAppend () {
+	printf "$INFOFORMAT Zapisování údajů o uživateli do '/root/accounts'...\n"
+	echo "$primaryName, $secondaryName, $nickname" >> /root/accounts
+	printf "$OKFORMAT Údaje byly zapsány.\n"
+	printf "$INFOFORMAT Obsah souboru '/root/accounts' :"
+	cat /root/accounts
+}
+
 #>> cleanup prompt, deleting user
 userDeletePrompt () {
+	printf "$INFOFORMAT Celý skript byl nyní úspěšně dokončen. Budou vymazány jeho úpravy systému.\n"
 	read -p "$QUESTIONFORMAT Chcete vymazat vytvořeného uživatele? a/N " -n 1 -r
 	echo
 		if [[ $REPLY =~ ^[AaYy]$ ]];
@@ -214,6 +276,17 @@ groupDeletePrompt () {
 		fi
 }
 
+fileDeletePrompt () {
+	read -p "$QUESTIONFORMAT Chcete vymazat soubor '/root/accounts'? a/N " -n 1 -r
+	echo
+		if [[ $REPLY =~ ^[AaYy]$ ]];
+		then
+			sudo rm /root/accounts
+		else
+			:
+		fi
+}
+
 #>> asking the user if another account should be created
 repeatPrompt () {
 read -p "$QUESTIONFORMAT Chcete vytvořit další účet? a/N " -n 1 -r
@@ -236,6 +309,7 @@ readPrimaryName
 }
 
 #>>> the main code
+sudoCheck
 splash
 printf "$INFOFORMAT Dobrý Den. Vítejte v SimpleUserCreate skriptu.\n"
 mainLoop
