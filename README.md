@@ -8,7 +8,5 @@ git clone https://github.com/Czechball/SimpleUserCreate.git
 
 cd SimpleUserCreate
 
-./SimpleUserCreate.sh
+sudo ./SimpleUserCreate.sh
 ```
-
-The script may ask for root permission when creating the user and group.
