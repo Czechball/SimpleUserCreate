@@ -207,7 +207,7 @@ accountsFileCheck () {
 		fi
 		accountsFileAppend
 	else
-		echo "$INFOFORMAT /root/accounts neexistuje. Bude vytvořen a budou do něj zapsány informace o vytvořeném uživateli.\n"
+		printf "$INFOFORMAT /root/accounts neexistuje. Bude vytvořen a budou do něj zapsány informace o vytvořeném uživateli.\n"
 		read -p "$QUESTIONFORMAT Chcete vytvořit soubor /etc/accounts a zapsat do něj informace u uživateli? A/n " -n 1 -r
 		echo
 		if [[ $REPLY =~ ^[AaYy]$ ]];
@@ -227,7 +227,7 @@ accountsFileCreate () {
 	if [ -f /root/accounts ];
 	then
 		printf "$OKFORMAT Soubor byl úspěšně vytvořen a uživatel zapsán.\n"
-		printf "$INFOFORMAT Obsah souboru /root/accounts :"
+		printf "$INFOFORMAT Obsah souboru /root/accounts :\n"
 		cat /root/accounts
 	else
 		printf "$ERRORFORMAT \e[38;5;196mCHYBA: Soubor '/root/accounts' nebyl nalezen. Máte oprávnění root?\e[0m\n"
@@ -238,7 +238,7 @@ accountsFileAppend () {
 	printf "$INFOFORMAT Zapisování údajů o uživateli do '/root/accounts'...\n"
 	echo "$primaryName, $secondaryName, $nickname" >> /root/accounts
 	printf "$OKFORMAT Údaje byly zapsány.\n"
-	printf "$INFOFORMAT Obsah souboru '/root/accounts' :"
+	printf "$INFOFORMAT Obsah souboru '/root/accounts' :\n"
 	cat /root/accounts
 }
 
